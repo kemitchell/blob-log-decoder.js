@@ -6,6 +6,7 @@
   "repository": "kemitchell/blob-log-decoder.js",
   "license": "MIT",
   "dependencies": {
+    "async.each": "^0.5.2",
     "readable-stream": "^2.1.4"
   },
   "devDependencies": {

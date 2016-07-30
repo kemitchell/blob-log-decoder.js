@@ -74,7 +74,7 @@ prototype._transform = function (chunk, encoding, callback) {
       }
 
       // Read the length of this blob.
-      if (!blob.length) {
+      if (blob.length === false) {
         var lengthOctetsArray = blob.lengthOctetsArray
         lengthOctetsArray.push(chunk[offset])
         if (lengthOctetsArray.length === 4) {
@@ -93,7 +93,7 @@ prototype._transform = function (chunk, encoding, callback) {
         offset++
 
       // Read the CRC.
-      } else if (!blob.crc) {
+      } else if (blob.crc === false) {
         var crcOctetsArray = blob.crcOctetsArray
         crcOctetsArray.push(chunk[offset])
         if (crcOctetsArray.length === 4) {

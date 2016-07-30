@@ -79,9 +79,16 @@ prototype._transform = function (chunk, encoding, callback) {
         lengthOctetsArray.push(chunk[offset])
         if (lengthOctetsArray.length === 4) {
           var length = octetsToInteger(lengthOctetsArray)
-          blob.length = length
-          blob.bytesLeftToRead = length
-          delete blob.lengthOctetsArray
+          if (length === 0) {
+            var error = new Error('zero length')
+            error.index = blob.index
+            error.zeroLength = true
+            return callback(error)
+          } else {
+            blob.length = length
+            blob.bytesLeftToRead = length
+            delete blob.lengthOctetsArray
+          }
         }
         offset++
 
@@ -159,6 +166,17 @@ prototype._transform = function (chunk, encoding, callback) {
       }
     }
   }
+}
+
+prototype._flush = function (callback) {
+  var missingBytes = this._currentBlob.bytesLeftToRead
+  if (missingBytes !== 0) {
+    var error = new Error('incomplete blob')
+    error.incomplete = true
+    error.missingBytes = this.missingBytes
+    this.emit('error', error)
+  }
+  callback()
 }
 
 function octetsToInteger (octetsArray) {

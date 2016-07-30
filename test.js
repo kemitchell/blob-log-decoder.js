@@ -164,6 +164,66 @@ tape('decode a hundred tiny blobs', function (test) {
   })
 })
 
+tape('decode log with zero length', function (test) {
+  mktempd(function (error, directory, cleanUp) {
+    test.ifError(error)
+    var filePath = path.join(directory, 'test.log')
+    var write = fs.createWriteStream(filePath)
+    var firstIndex = 1
+    write.write(intBuffer(firstIndex))
+    write.write(
+      new Buffer([
+        0x00, 0x00, 0x00, 0x00, // zero-filled length
+        0x00, 0x00, 0x00, 0x00, // zero-filled CRC-32
+        0xFF, 0xFF, 0xFF, 0xFF
+      ])
+    )
+    write.end(function () {
+      fs.createReadStream(filePath)
+      .pipe(
+        new Decoder(filePath)
+        .once('error', function (error) {
+          test.equal(
+            error.zeroLength, true,
+            'emits zero length error'
+          )
+          test.end()
+        })
+      )
+    })
+  })
+})
+
+tape('decode log with incomplete write', function (test) {
+  mktempd(function (error, directory, cleanUp) {
+    test.ifError(error)
+    var filePath = path.join(directory, 'test.log')
+    var write = fs.createWriteStream(filePath)
+    var firstIndex = 1
+    write.write(intBuffer(firstIndex))
+    write.write(
+      new Buffer([
+        0x00, 0x00, 0x00, 0x04, // length = 4
+        0xd8, 0x7f, 0x7e, 0x0c, // CRC-32 of "test"
+        0x74, 0x65, 0x73 // "tes"
+      ])
+    )
+    write.end(function () {
+      fs.createReadStream(filePath)
+      .pipe(
+        new Decoder(filePath)
+        .once('error', function (error) {
+          test.equal(
+            error.incomplete, true,
+            'emits incomplete blob error'
+          )
+          test.end()
+        })
+      )
+    })
+  })
+})
+
 function blobBuffer (content) {
   var buffer = new Buffer(4 + 4 + content.length)
   buffer.writeUInt32BE(content.length, 0)

@@ -1,0 +1,23 @@
+{
+  "name": "blob-log-decoder",
+  "version": "0.0.0",
+  "description": "read blob-log files",
+  "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
+  "repository": "kemitchell/blob-log-decoder.js",
+  "license": "MIT",
+  "dependencies": {
+    "readable-stream": "^2.1.4"
+  },
+  "devDependencies": {
+    "async.map": "^0.5.2",
+    "concat-stream": "^1.5.1",
+    "crc-hash": "^0.2.2",
+    "standard": "^7.1.2",
+    "tape": "^4.6.0",
+    "temporary-directory": "^1.0.2"
+  },
+  "scripts": {
+    "test": "node test.js",
+    "lint": "standard"
+  }
+}

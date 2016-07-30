@@ -1,3 +1,22 @@
+## Usage
+
+```javascript
+var Decoder = require('blob-log-decoder')
+var fs = require('fs')
+
+fs.createReadStream(path)
+.pipe(new Decoder())
+.on('data', function (blob) {
+  // blob.index (Number)
+  // blob.length (Number)
+  // blob.crc (Number)
+  // blob.stream (Readable)
+})
+.once('end', function () {
+  // ...
+})
+```
+
 ## File Format
 
 blob-log log files consist of a big-endian, unsigned, 32-bit integer

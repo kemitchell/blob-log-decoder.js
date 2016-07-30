@@ -19,7 +19,7 @@ tape('decode one blob', function (test) {
       fs.createReadStream(filePath)
       .pipe(
         new Decoder(filePath)
-        .once('error', function (error) {
+        .once('error', /* istanbul ignore next */ function (error) {
           test.ifError(error)
         })
         .once('data', function (chunk) {
@@ -53,7 +53,7 @@ tape('decode one big blob', function (test) {
       fs.createReadStream(filePath)
       .pipe(
         new Decoder(filePath)
-        .once('error', function (error) {
+        .once('error', /* istanbul ignore next */ function (error) {
           test.ifError(error)
         })
         .once('data', function (chunk) {
@@ -90,7 +90,7 @@ tape('decode two blobs', function (test) {
       fs.createReadStream(filePath)
       .pipe(
         new Decoder(filePath)
-        .once('error', function (error) {
+        .once('error', /* istanbul ignore next */ function (error) {
           test.ifError(error)
         })
         .on('data', function (chunk) {
@@ -124,6 +124,40 @@ tape('decode two blobs', function (test) {
               done(null, chunk)
             }))
           }
+        })
+      )
+    })
+  })
+})
+
+tape('decode a hundred tiny blobs', function (test) {
+  mktempd(function (error, directory, cleanUp) {
+    test.ifError(error)
+    var filePath = path.join(directory, 'test.log')
+    var write = fs.createWriteStream(filePath)
+    var firstIndex = 1001
+    write.write(intBuffer(firstIndex))
+    for (var index = 0; index < 100; index++) {
+      write.write(blobBuffer(index.toString()))
+    }
+    write.end(function () {
+      var chunks = []
+      fs.createReadStream(filePath)
+      .pipe(
+        new Decoder(filePath)
+        .once('error', /* istanbul ignore next */ function (error) {
+          test.ifError(error)
+        })
+        .on('data', function (chunk) {
+          chunks.push(chunk)
+        })
+        .once('end', function () {
+          test.equal(
+            chunks.length, 100,
+            'read 100 chunks'
+          )
+          cleanUp()
+          test.end()
         })
       )
     })

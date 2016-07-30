@@ -6,6 +6,7 @@ var inherits = require('util').inherits
 module.exports = Decoder
 
 function Decoder () {
+  /* istanbul ignore if */
   if (!(this instanceof Decoder)) {
     return new Decoder()
   }
@@ -101,6 +102,7 @@ prototype._transform = function (chunk, encoding, callback) {
         var dataChunk = chunk.slice(
           offset, offset + blob.bytesLeftToRead
         )
+        /* istanbul ignore else: TODO: Write covering test. */
         if (toWrite[index] === undefined) {
           toWrite[index] = {
             blob: blob,
@@ -116,6 +118,7 @@ prototype._transform = function (chunk, encoding, callback) {
   }
 
   var blobsWithQueuedChunks = Object.keys(toWrite)
+  /* istanbul ignore if */
   if (blobsWithQueuedChunks.length === 0) {
     callback()
   } else {
@@ -128,18 +131,15 @@ prototype._transform = function (chunk, encoding, callback) {
     var blob = element.blob
     var stream = blob.stream
 
-    asyncEach(queue, writeChunkToStream, function (error) {
-      if (error) {
-        doneWritingChunks(error)
-      } else {
-        if (blob.bytesLeftToRead === 0) {
-          stream.end()
-        }
-        doneWritingChunks()
+    asyncEach(queue, writeChunkToStream, function () {
+      if (blob.bytesLeftToRead === 0) {
+        stream.end()
       }
+      doneWritingChunks()
     })
 
     function writeChunkToStream (chunk, doneWritingChunk) {
+      /* istanbul ignore if: TODO: Write covering test. */
       if (blob.waitingForDrainEvent) {
         stream.once('drain', function () {
           writeChunk(doneWritingChunk)

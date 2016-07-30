@@ -1,6 +1,6 @@
 {
   "name": "blob-log-decoder",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "read blob-log files",
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
   "repository": "kemitchell/blob-log-decoder.js",

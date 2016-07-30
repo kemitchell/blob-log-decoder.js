@@ -57,7 +57,7 @@ prototype._transform = function (chunk, encoding, callback) {
 
   while (offset < chunk.length) {
     // Read the index number at the start of the file.
-    if (!this._firstNumber) {
+    if (this._firstNumber === false) {
       var indexOctetsArray = this._firstNumberOctetsArray
       indexOctetsArray.push(chunk[offset])
       if (indexOctetsArray.length === 4) {

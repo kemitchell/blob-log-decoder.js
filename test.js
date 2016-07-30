@@ -44,7 +44,7 @@ tape('decode one big blob', function (test) {
     test.ifError(error)
     var filePath = path.join(directory, 'test.log')
     var write = fs.createWriteStream(filePath)
-    var firstIndex = 1
+    var firstIndex = 0
     var blobLength = 256 * 1000
     var blob = new Buffer(blobLength).fill(1)
     write.write(intBuffer(firstIndex))

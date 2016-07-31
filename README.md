@@ -23,9 +23,9 @@ blob-log log files consist of an integer equal to the sequence number
 of the first blob in the file, followed by one or more blob records.
 Each blob record consists of:
 
-1. an integer equal to the number of bytes in the blob
+1. an integer equal to a CRC-32 error-correcting code for the blob
 
-2. an integer equal to a CRC-32 error-correcting code for the blob
+2. an integer equal to the number of bytes in the blob
 
 3. the blob's bytes
 

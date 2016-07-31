@@ -73,8 +73,18 @@ prototype._transform = function (chunk, encoding, callback) {
         blob = this._currentBlob
       }
 
+      // Read the CRC.
+      if (blob.crc === false) {
+        var crcOctetsArray = blob.crcOctetsArray
+        crcOctetsArray.push(chunk[offset])
+        if (crcOctetsArray.length === 4) {
+          blob.crc = new Buffer(crcOctetsArray).readUInt32BE()
+          delete blob.crcOctetsArray
+        }
+        offset++
+
       // Read the length of this blob.
-      if (blob.length === false) {
+      } else if (blob.length === false) {
         var lengthOctetsArray = blob.lengthOctetsArray
         lengthOctetsArray.push(chunk[offset])
         if (lengthOctetsArray.length === 4) {
@@ -88,18 +98,8 @@ prototype._transform = function (chunk, encoding, callback) {
             blob.length = length
             blob.bytesLeftToRead = length
             delete blob.lengthOctetsArray
+            this._emit()
           }
-        }
-        offset++
-
-      // Read the CRC.
-      } else if (blob.crc === false) {
-        var crcOctetsArray = blob.crcOctetsArray
-        crcOctetsArray.push(chunk[offset])
-        if (crcOctetsArray.length === 4) {
-          blob.crc = new Buffer(crcOctetsArray).readUInt32BE()
-          delete blob.crcOctetsArray
-          this._emit()
         }
         offset++
 

@@ -173,8 +173,8 @@ tape('decode log with zero length', function (test) {
     write.write(intBuffer(firstIndex))
     write.write(
       new Buffer([
-        0x00, 0x00, 0x00, 0x00, // zero-filled length
         0x00, 0x00, 0x00, 0x00, // zero-filled CRC-32
+        0x00, 0x00, 0x00, 0x00, // zero-filled length
         0xFF, 0xFF, 0xFF, 0xFF
       ])
     )
@@ -203,8 +203,8 @@ tape('decode log with incomplete write', function (test) {
     write.write(intBuffer(firstIndex))
     write.write(
       new Buffer([
-        0x00, 0x00, 0x00, 0x04, // length = 4
         0xd8, 0x7f, 0x7e, 0x0c, // CRC-32 of "test"
+        0x00, 0x00, 0x00, 0x04, // length = 4
         0x74, 0x65, 0x73 // "tes"
       ])
     )
@@ -226,14 +226,13 @@ tape('decode log with incomplete write', function (test) {
 
 function blobBuffer (content) {
   var buffer = new Buffer(4 + 4 + content.length)
-  buffer.writeUInt32BE(content.length, 0)
   buffer.writeUInt32BE(
     crcHash.createHash('crc32')
     .update(content)
     .digest()
-    .readUInt32BE(),
-    4
+    .readUInt32BE()
   )
+  buffer.writeUInt32BE(content.length, 4)
   var from = Buffer.isBuffer(content)
   ? content
   : new Buffer(content, 'ascii')

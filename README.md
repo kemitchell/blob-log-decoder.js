@@ -17,6 +17,31 @@ fs.createReadStream(path)
 })
 ```
 
+_Note_: The decoder will not check CRC-32s or lengths against blob
+data for you.  You may wish to:
+
+```javascript
+var crcHash = require('crc-hash')
+var assert = require('assert')
+
+decoder.on('data', function (blob) {
+  var expectedCRC = blob.crc
+  var expectedLength = blob.length
+  var crc = crcHash.createHash('crc32')
+  var length = 0
+  var buffer = []
+  blob.stream
+  .on('data', function (chunk) {
+    length += chunk.length
+    crc.update(chunk)
+  })
+  .once('end', function () {
+    assert.equal(crc.digest().readUInt32BE(), expectedCRC)
+    assert.equal(length, expectedLength)
+  })
+})
+```
+
 ## Writing
 
 [blob-log-encoder] and [stream-to-blob-log] are packages for writing

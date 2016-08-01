@@ -17,6 +17,15 @@ fs.createReadStream(path)
 })
 ```
 
+## Writing
+
+[blob-log-encoder] and [stream-to-blob-log] are packages for writing
+blob to blob-log files.
+
+[blob-log-encoder]: https://www.npmjs.com/package/blob-log-encoder
+
+[stream-to-blob-log]: https://www.npmjs.com/package/stream-to-blob-log
+
 ## File Format
 
 blob-log log files consist of an integer equal to the sequence number

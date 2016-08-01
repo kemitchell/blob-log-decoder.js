@@ -29,7 +29,6 @@ decoder.on('data', function (blob) {
   var expectedLength = blob.length
   var crc = crcHash.createHash('crc32')
   var length = 0
-  var buffer = []
   blob.stream
   .on('data', function (chunk) {
     length += chunk.length

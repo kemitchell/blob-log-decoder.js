@@ -173,7 +173,7 @@ prototype._flush = function (callback) {
   if (missingBytes !== 0) {
     var error = new Error('incomplete blob')
     error.incomplete = true
-    error.missingBytes = this.missingBytes
+    error.missingBytes = missingBytes
     this.emit('error', error)
   }
   callback()
